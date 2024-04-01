@@ -1,4 +1,4 @@
-# Demo project
+# Demo project [backend]
 ## A Valid PR
 
 For a PR (Pull Request) to be considered valid, it must fulfill the following criteria:

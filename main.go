@@ -49,6 +49,7 @@ func main() {
 	r.HandleFunc("/expenses", handlers.GetExpense(svc)).Methods("GET")
 	r.HandleFunc("/expenses", handlers.UpdateExpense(svc)).Methods("PUT")
 	r.HandleFunc("/expenses", handlers.DeleteExpense(svc)).Methods("DELETE")
+	r.HandleFunc("/", handlers.HelloWorld).Methods("GET")
 
 	opts := middleware.RedocOpts{SpecURL: "/swagger.json"}
 	sh := middleware.Redoc(opts, nil)
