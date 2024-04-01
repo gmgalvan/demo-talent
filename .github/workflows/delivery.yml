@@ -2,7 +2,7 @@ name: Deliver to EC2
 
 on:
   workflow_run:
-    workflows: ["Build and Push to ECR"]
+    workflows: ["CI process"]
     types:
       - completed
 
