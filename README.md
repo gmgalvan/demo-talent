@@ -65,12 +65,26 @@ mockgen -package=mocks -destination=./mocks/mock_expense_repository.go github.co
 go test ./...
 ```
 
+## Infra
+- Terraform commands
+```bash
+terraform plan
+terraform apply
+```
 
-## Implement filters by property on expenses (Reuced steps)
-0.- create new branch
-1.- Implement on repo the code for filtering
-2.- create the handler
-3.- Implement unit tests
-4.- Update swagger documents
-5.- creae migratiosn files if needed
-6.- Commit and push
+- Modify hosts file on ansible: 
+ec2-instance ansible_host=<public-ip-address>
+- Run comamnd
+```bash
+ansible-playbook -i hosts docker-playbook.yml --private-key /path/to/private-key.pem
+```
+
+## Show Demo
+## Implement filters by property on expenses (Reduced steps)
+    0.- create new branch
+    1.- Implement on repo the code for filtering
+    2.- create the handler
+    3.- Implement unit tests
+    4.- Update swagger documents
+    5.- creae migratiosn files if needed
+    6.- Commit and push
