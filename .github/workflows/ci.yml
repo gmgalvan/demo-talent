@@ -33,7 +33,7 @@ jobs:
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 262918476271.dkr.ecr.us-east-1.amazonaws.com
       
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, tag and push image to Amazon ECR
         run: |
           docker build -t demo-app-repo \
             --build-arg DB_HOST=${{ secrets.DB_HOST }} \
