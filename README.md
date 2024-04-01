@@ -76,7 +76,7 @@ terraform apply
 ec2-instance ansible_host=<public-ip-address>
 - Run comamnd
 ```bash
-ansible-playbook -i hosts docker-playbook.yml --private-key /path/to/private-key.pem
+ansible-playbook -i hosts docker-playbook.yml --private-key /path/to/private-key.pem -e "db_password=your_secure_password"
 ```
 
 ## Show Demo

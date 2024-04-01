@@ -35,3 +35,16 @@
         name: ubuntu
         groups: docker
         append: yes
+
+    - name: Install PostgreSQL
+      apt:
+        name:
+          - postgresql
+          - postgresql-contrib
+        state: present
+        
+    - name: Ensure PostgreSQL is started and enabled on boot
+      service:
+        name: postgresql
+        state: started
+        enabled: yes

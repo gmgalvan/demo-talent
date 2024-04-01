@@ -8,34 +8,39 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+      
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-
+      
       - name: Run tests
         run: |
           cd services
           go test ./...
-
+      
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-
+      
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 262918476271.dkr.ecr.us-east-1.amazonaws.com
-
+      
       - name: Build, tag, and push image to Amazon ECR
         run: |
-          docker build -t demo-app-repo .
+          docker build -t demo-app-repo \
+            --build-arg DB_HOST=${{ secrets.DB_HOST }} \
+            --build-arg DB_PORT=${{ secrets.DB_PORT }} \
+            --build-arg DB_USER=${{ secrets.DB_USER }} \
+            --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            --build-arg DB_NAME=${{ secrets.DB_NAME }} \
+            .
           docker tag demo-app-repo:latest 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
           docker push 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
