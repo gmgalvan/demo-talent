@@ -1,0 +1,207 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/expenses": {
+      "put": {
+        "tags": [
+          "Expense"
+        ],
+        "summary": "Updates an expense.",
+        "operationId": "updateExpenseRequest",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "description",
+                "amount"
+              ],
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "format": "double",
+                  "x-go-name": "Amount"
+                },
+                "description": {
+                  "type": "string",
+                  "x-go-name": "Description"
+                },
+                "id": {
+                  "type": "string",
+                  "x-go-name": "ID"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/okResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Expense"
+        ],
+        "summary": "Creates a new expense.",
+        "operationId": "createExpenseRequest",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "description",
+                "amount"
+              ],
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "format": "double",
+                  "x-go-name": "Amount"
+                },
+                "description": {
+                  "type": "string",
+                  "x-go-name": "Description"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/expenseResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
+    "/expenses/{id}": {
+      "get": {
+        "tags": [
+          "Expense"
+        ],
+        "summary": "Retrieves an expense by ID.",
+        "operationId": "getExpenseRequest",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/expenseResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "404": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Expense"
+        ],
+        "summary": "Deletes an expense by ID.",
+        "operationId": "deleteExpenseRequest",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/okResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "errorResponse": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "expenseResponse": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "x-go-name": "Amount"
+          },
+          "date_creation": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "DateCreation"
+          },
+          "description": {
+            "type": "string",
+            "x-go-name": "Description"
+          },
+          "id": {
+            "type": "string",
+            "x-go-name": "ID"
+          }
+        }
+      }
+    },
+    "okResponse": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    }
+  }
+}
