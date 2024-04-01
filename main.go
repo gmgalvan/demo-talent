@@ -37,12 +37,12 @@ func main() {
 	// Run database migrations
 	if err := runMigrations(db); err != nil {
 		log.Fatal("Error running migrations:", err)
-		log.Println("Database connection variables:")
-        log.Println("DB_HOST:", dbHost)
-        log.Println("DB_PORT:", dbPort)
-        log.Println("DB_USER:", dbUser)
-        log.Println("DB_PASSWORD:", dbPassword)
-        log.Println("DB_NAME:", dbName)
+		log.Fatal("Database connection variables:")
+        log.Fatal("DB_HOST:", dbHost)
+        log.Fatal("DB_PORT:", dbPort)
+        log.Fatal("DB_USER:", dbUser)
+        log.Fatal("DB_PASSWORD:", dbPassword)
+        log.Fatal("DB_NAME:", dbName)
         log.Fatal("Error running migrations:", err)
 	}
 
