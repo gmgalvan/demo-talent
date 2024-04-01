@@ -32,10 +32,10 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 159348192587.dkr.ecr.us-east-2.amazonaws.com
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 262918476271.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
-          docker build -t talent-demo .
-          docker tag talent-demo:latest 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo/talent-demo:latest
-          docker push 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo/talent-demo:latest
+          docker build -t demo-app-repo .
+          docker tag demo-app-repo:latest 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
+          docker push 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
