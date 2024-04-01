@@ -15,7 +15,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
+	_ "github.com/lib/pq" 
 )
 
 func main() {
