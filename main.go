@@ -37,6 +37,13 @@ func main() {
 	// Run database migrations
 	if err := runMigrations(db); err != nil {
 		log.Fatal("Error running migrations:", err)
+		log.Println("Database connection variables:")
+        log.Println("DB_HOST:", dbHost)
+        log.Println("DB_PORT:", dbPort)
+        log.Println("DB_USER:", dbUser)
+        log.Println("DB_PASSWORD:", dbPassword)
+        log.Println("DB_NAME:", dbName)
+        log.Fatal("Error running migrations:", err)
 	}
 
 	repo := repository.NewExpenseRepository(db)
@@ -65,10 +72,10 @@ func main() {
 }
 
 func runMigrations(db *sql.DB) error {
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	if err != nil {
-		return fmt.Errorf("error creating migration driver: %w", err)
-	}
+    driver, err := postgres.WithInstance(db, &postgres.Config{})
+    if err != nil {
+        return fmt.Errorf("error creating migration driver: %w", err)
+    }
 
 	m, err := migrate.NewWithDatabaseInstance("file://migrations", "postgres", driver)
 	if err != nil {
