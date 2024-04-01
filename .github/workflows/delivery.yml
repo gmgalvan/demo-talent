@@ -40,13 +40,6 @@ jobs:
           # Pull the image
           docker pull 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
           
-          # Check if the container exists
-          if docker ps -a --format '{{.Names}}' | grep -Eq "^demo-app-repo$"; then
-            # Stop and remove the container if it exists
-            docker stop demo-app-repo || true
-            docker rm demo-app-repo || true
-          fi
-          
           # Run the new container
           docker run -d --name demo-app-repo -p 8080:80 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
         EOF
