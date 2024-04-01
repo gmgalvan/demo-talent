@@ -39,7 +39,9 @@ jobs:
           
           # Pull the image
           docker pull 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
-          
+          # Stop and remove the existing container (if it exists)
+          docker stop demo-app-repo || true
+          docker rm demo-app-repo || true
           # Run the new container
           docker run -d --name demo-app-repo -p 8080:80 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
         EOF
