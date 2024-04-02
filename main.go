@@ -56,12 +56,18 @@ func main() {
 	r.HandleFunc("/expenses", handlers.GetExpense(svc)).Methods("GET")
 	r.HandleFunc("/expenses", handlers.UpdateExpense(svc)).Methods("PUT")
 	r.HandleFunc("/expenses", handlers.DeleteExpense(svc)).Methods("DELETE")
-	r.HandleFunc("/", handlers.HelloWorld).Methods("GET")
 
+	// Register the budget handlers routes for budget
+	r.HandleFunc("/budgets", handlers.CreateBudget(services.NewBudgetService(repository.NewBudgetRepository(db)))).Methods("POST")
+	r.HandleFunc("/budgets", handlers.GetBudget(services.NewBudgetService(repository.NewBudgetRepository(db)))).Methods("GET")
+	r.HandleFunc("/budgets", handlers.UpdateBudget(services.NewBudgetService(repository.NewBudgetRepository(db)))).Methods("PUT")
+	r.HandleFunc("/budgets", handlers.DeleteBudget(services.NewBudgetService(repository.NewBudgetRepository(db)))).Methods("DELETE")
+	
 	opts := middleware.RedocOpts{SpecURL: "/swagger.json"}
 	sh := middleware.Redoc(opts, nil)
 	r.Handle("/docs", sh).Methods("GET")
 	r.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Serving swagger.json")
 		http.ServeFile(w, r, "./docs/swagger.json")
 	})
 

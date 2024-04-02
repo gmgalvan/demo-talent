@@ -79,3 +79,21 @@ ec2-instance ansible_host=<public-ip-address>
 ansible-playbook -i hosts docker-playbook.yml --private-key /path/to/private-key.pem -e "db_password=your_secure_password"
 ansible-playbook -i inventory.ini playbook.yml
 ```
+
+
+## Prompts for task of enable Budgets
+Generate only a Go sctructure that will be used for an API, with the following properties:
+- ID
+- Amount
+- StartDate
+- EndDate
+Is for a budget entity
+could you give me sql migration file for create table from given strcuture
+
+could you give me a payload json example with fake data for the given expense, please
+{
+  "id": 12345,
+  "amount": 50.75,
+  "start_date": "2024-04-01T08:00:00Z",
+  "end_date": "2024-04-30T08:00:00Z"
+}

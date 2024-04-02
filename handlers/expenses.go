@@ -8,17 +8,6 @@ import (
 	"github.com/demo-talent/services"
 )
 
-// HelloWorld is the HTTP handler for the root path.
-// swagger:route GET / HelloWorld helloWorldRequest
-// Returns a simple hello world message.
-// Responses:
-//
-//	200: okResponse
-//	500: errorResponse
-func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, world!"))
-}
-
 // CreateExpense is the HTTP handler for creating a new expense.
 // swagger:route POST /expenses Expense createExpenseRequest
 // Creates a new expense.
