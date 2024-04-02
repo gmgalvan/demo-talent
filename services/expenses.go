@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	"fmt"
+
 	"time"
 
 	"github.com/demo-talent/entities"
@@ -28,7 +28,7 @@ func NewExpenseService(repo repository.ExpenseRepositoryInterface) ExpenseServic
 
 // CreateExpense creates a new expense.
 func (s *expenseServiceImpl) CreateExpense(ctx context.Context, e *entities.Expense) error {
-	e.ID = generateUniqueID()
+	e.ID = GenerateUniqueID("expense")
 
 	e.DateCreation = time.Now().Unix()
 
@@ -59,8 +59,4 @@ func (s *expenseServiceImpl) DeleteExpense(ctx context.Context, id string) error
 
 	return s.repo.Delete(ctx, id)
 }
-
-// generateUniqueID generates a new unique ID for an expense.
-func generateUniqueID() string {
-	return fmt.Sprintf("expense_%d", time.Now().UnixNano())
-}
+ 

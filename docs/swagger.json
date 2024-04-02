@@ -1,6 +1,49 @@
 {
   "swagger": "2.0",
   "paths": {
+    "/budgets": {
+      "post": {
+        "tags": [
+          "Budget"
+        ],
+        "summary": "Creates a new budget.",
+        "operationId": "createBudgetRequest",
+        "responses": {
+          "201": {
+            "$ref": "#/responses/budgetResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
+    "/budgets/{id}": {
+      "get": {
+        "tags": [
+          "Budget"
+        ],
+        "summary": "Retrieves a budget by ID.",
+        "operationId": "getBudgetRequest",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/budgetResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "404": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
     "/expenses": {
       "put": {
         "tags": [
@@ -153,6 +196,34 @@
     }
   },
   "responses": {
+    "budgetResponse": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "x-go-name": "Amount"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "x-go-name": "EndDate"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "x-go-name": "StartDate"
+          }
+        }
+      }
+    },
     "errorResponse": {
       "description": "",
       "schema": {
