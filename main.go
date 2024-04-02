@@ -51,8 +51,8 @@ func main() {
 
 	r := mux.NewRouter()
 
-	// Register the expense handlers
-	r.HandleFunc("/expenses", handlers.CreateExpense(svc)).Methods("POST")
+	// Register the expense handlers routes
+	r.HandleFunc("/expenses", handlers.CreateExpense(svc)).Methods("POST") // with ID
 	r.HandleFunc("/expenses", handlers.GetExpense(svc)).Methods("GET")
 	r.HandleFunc("/expenses", handlers.UpdateExpense(svc)).Methods("PUT")
 	r.HandleFunc("/expenses", handlers.DeleteExpense(svc)).Methods("DELETE")

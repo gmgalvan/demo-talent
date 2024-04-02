@@ -79,16 +79,3 @@ ec2-instance ansible_host=<public-ip-address>
 ansible-playbook -i hosts docker-playbook.yml --private-key /path/to/private-key.pem -e "db_password=your_secure_password"
 ansible-playbook -i inventory.ini playbook.yml
 ```
-
-## Show Demo
-### Implement filters by property on expenses (Reduced steps)
-    1.- Create new branch
-    2.- Implement on repo the code for filtering
-    3.- create the handler
-    4.- Implement unit tests
-    5.- Update swagger documents
-    6.- creae migratiosn files if needed
-    7.- Commit and push
-    8.- Create or update smoke tests
-    9.- deploy to production
-    10.- Monitor app
