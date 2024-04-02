@@ -12,14 +12,14 @@ func main() {
 	// Read the instance URL from the environment variable
 	instanceURL := os.Getenv("INSTANCE_URL")
 	if instanceURL == "" {
-		fmt.Println("INSTANCE_URL environment variable is not set")
+		fmt.Println("❌ INSTANCE_URL environment variable is not set")
 		return
 	}
 
 	// Read synthetic data from JSON files
 	expenseData, err := readJSONFile("./integration/smoke_tests/expense_data.json")
 	if err != nil {
-		fmt.Println("Error reading expense data:", err)
+		fmt.Println("❌ Error reading expense data:", err)
 		return
 	}
 
@@ -55,23 +55,23 @@ func testHelloWorld(client *http.Client, instanceURL string) {
 	req, _ := http.NewRequest("GET", url, nil)
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("HelloWorld test failed:", err)
+		fmt.Println("❌ HelloWorld test failed:", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		fmt.Println("HelloWorld test failed: Unexpected status code", resp.StatusCode)
+		fmt.Println("❌ HelloWorld test failed: Unexpected status code", resp.StatusCode)
 		return
 	}
 
-	fmt.Println("HelloWorld test passed")
+	fmt.Println("✅ HelloWorld test passed")
 }
 
 func testCreateExpense(client *http.Client, instanceURL string, data map[string]interface{}) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
-		fmt.Println("Error marshalling JSON:", err)
+		fmt.Println("❌ Error marshalling JSON:", err)
 		return
 	}
 
@@ -81,15 +81,15 @@ func testCreateExpense(client *http.Client, instanceURL string, data map[string]
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("CreateExpense test failed:", err)
+		fmt.Println("❌ CreateExpense test failed:", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusBadRequest {
-		fmt.Println("CreateExpense test failed: Unexpected status code", resp.StatusCode)
+		fmt.Println("❌ CreateExpense test failed: Unexpected status code", resp.StatusCode)
 		return
 	}
 
-	fmt.Println("CreateExpense test passed")
+	fmt.Println("✅ CreateExpense test passed")
 }
