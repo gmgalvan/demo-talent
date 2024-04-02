@@ -91,4 +91,4 @@ ansible-playbook -i inventory.ini playbook.yml
     7.- Commit and push
     8.- Create or update smoke tests
     9.- deploy to production
-    10.- monitor app
+    10.- Monitor app
