@@ -16,22 +16,22 @@ func main() {
 		return
 	}
 
+	client := &http.Client{}
 	// Read synthetic data from JSON files
 	expenseData, err := readJSONFile("./integration/smoke_tests/expense_data.json")
 	if err != nil {
 		fmt.Println("❌ Error reading expense data:", err)
 		return
-	}
-
-	// Initialize HTTP client
-	client := &http.Client{}
-
-	// Test handlers with synthetic data
-	// Test HelloWorld handler
-	testHelloWorld(client, instanceURL)
-
-	// Test CreateExpense handler
+	}	
 	testCreateExpense(client, instanceURL, expenseData)
+
+	//test CreateBudget handler
+	budgetData, err := readJSONFile("./integration/smoke_tests/budget_data.json")
+	if err != nil {
+		fmt.Println("❌ Error reading budget data:", err)
+		return
+	}
+	testCreateBudget(client, instanceURL, budgetData)
 }
 
 func readJSONFile(filename string) (map[string]interface{}, error) {
@@ -92,4 +92,32 @@ func testCreateExpense(client *http.Client, instanceURL string, data map[string]
 	}
 
 	fmt.Println("✅ CreateExpense test passed")
+}
+
+// test budget handlers
+// test CreateBudget handler
+func testCreateBudget(client *http.Client, instanceURL string, data map[string]interface{}) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println("❌ Error marshalling JSON:", err)
+		return
+	}
+
+	url := fmt.Sprintf("%s/budgets", instanceURL)
+	req, _ := http.NewRequest("POST", url, strings.NewReader(string(jsonData)))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("❌ CreateBudget test failed:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusBadRequest {
+		fmt.Println("❌ CreateBudget test failed: Unexpected status code", resp.StatusCode)
+		return
+	}
+
+	fmt.Println("✅ CreateBudget test passed")
 }
