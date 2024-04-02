@@ -17,7 +17,7 @@ func main() {
 	}
 
 	// Read synthetic data from JSON files
-	expenseData, err := readJSONFile("expense_data.json")
+	expenseData, err := readJSONFile("./integration/smoke_tests/expense_data.json")
 	if err != nil {
 		fmt.Println("Error reading expense data:", err)
 		return
