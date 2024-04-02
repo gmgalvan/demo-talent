@@ -9,6 +9,13 @@ import (
 )
 
 func main() {
+	// Read the instance URL from the environment variable
+	instanceURL := os.Getenv("INSTANCE_URL")
+	if instanceURL == "" {
+		fmt.Println("INSTANCE_URL environment variable is not set")
+		return
+	}
+
 	// Read synthetic data from JSON files
 	expenseData, err := readJSONFile("expense_data.json")
 	if err != nil {
@@ -21,10 +28,10 @@ func main() {
 
 	// Test handlers with synthetic data
 	// Test HelloWorld handler
-	testHelloWorld(client)
+	testHelloWorld(client, instanceURL)
 
 	// Test CreateExpense handler
-	testCreateExpense(client, expenseData)
+	testCreateExpense(client, instanceURL, expenseData)
 }
 
 func readJSONFile(filename string) (map[string]interface{}, error) {
@@ -43,8 +50,9 @@ func readJSONFile(filename string) (map[string]interface{}, error) {
 	return result, nil
 }
 
-func testHelloWorld(client *http.Client) {
-	req, _ := http.NewRequest("GET", "/", nil)
+func testHelloWorld(client *http.Client, instanceURL string) {
+	url := fmt.Sprintf("%s/", instanceURL)
+	req, _ := http.NewRequest("GET", url, nil)
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("HelloWorld test failed:", err)
@@ -60,14 +68,15 @@ func testHelloWorld(client *http.Client) {
 	fmt.Println("HelloWorld test passed")
 }
 
-func testCreateExpense(client *http.Client, data map[string]interface{}) {
+func testCreateExpense(client *http.Client, instanceURL string, data map[string]interface{}) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		fmt.Println("Error marshalling JSON:", err)
 		return
 	}
 
-	req, _ := http.NewRequest("POST", "/expenses", strings.NewReader(string(jsonData)))
+	url := fmt.Sprintf("%s/expenses", instanceURL)
+	req, _ := http.NewRequest("POST", url, strings.NewReader(string(jsonData)))
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
