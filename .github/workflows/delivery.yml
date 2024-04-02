@@ -24,6 +24,7 @@ jobs:
         DB_USER: ${{ secrets.DB_USER }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         DB_NAME: ${{ secrets.DB_NAME }}
+        SSL_MODE: ${{ secrets.SSL_MODE }}
       run: |
         # SSH into the EC2 instance
         echo "$PRIVATE_KEY" > private_key.pem
@@ -57,6 +58,7 @@ jobs:
           -e DB_USER=${DB_USER} \
           -e DB_PASSWORD=${DB_PASSWORD} \
           -e DB_NAME=${DB_NAME} \
+          -e SSL_MODE=${SSL_MODE} \
           -p 8080:8080 \
           262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
         

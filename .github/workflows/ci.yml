@@ -41,6 +41,7 @@ jobs:
             --build-arg DB_USER=${{ secrets.DB_USER }} \
             --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             --build-arg DB_NAME=${{ secrets.DB_NAME }} \
+            --build-arg SSL_MODE=${{ secrets.SSL_MODE }} \
             .
           docker tag demo-app-repo:latest 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest
           docker push 262918476271.dkr.ecr.us-east-1.amazonaws.com/demo-app-repo:latest

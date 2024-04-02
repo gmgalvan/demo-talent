@@ -1,10 +1,14 @@
-# Get the default subnet
+data "aws_vpc" "default" {
+  default = true
+}
+
+# Get the default subnet data
 data "aws_subnet" "default" {
   vpc_id            = data.aws_vpc.default.id
   availability_zone = "us-east-1a"
 }
 
-# Create a security group
+# Create a security group for the demo instance
 resource "aws_security_group" "demo_security_group" {
   name        = "demo-security-group"
   description = "Allow inbound traffic on port 8080 and SSH"
@@ -32,13 +36,12 @@ resource "aws_security_group" "demo_security_group" {
   }
 }
 
-# Get the existing key pair
+# Get the existing key pair data
 data "aws_key_pair" "demo_key_pair" {
   key_name = "demo-key-pair"
 }
 
-
-# Create an EC2 instance
+# Create an EC2 instance for the demo environment
 resource "aws_instance" "demo_instance" {
   ami                    = "ami-0c4f7023847b90238"
   instance_type          = "t2.micro"
@@ -50,7 +53,6 @@ resource "aws_instance" "demo_instance" {
     Name = "dev-demo-instance"
   }
 }
-
 
 # Create a security group for the prod instance
 resource "aws_security_group" "prod_security_group" {
@@ -80,7 +82,7 @@ resource "aws_security_group" "prod_security_group" {
   }
 }
 
-# Create an EC2 instance for prod
+# Create an EC2 instance for the prod environment
 resource "aws_instance" "prod_instance" {
   ami                    = "ami-0c4f7023847b90238"
   instance_type          = "t2.micro"

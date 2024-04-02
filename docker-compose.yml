@@ -13,6 +13,7 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=mysecretpassword
       - DB_NAME=mydatabase
+      - SSL_MODE=disable
   db:
     image: postgres:13
     ports:
