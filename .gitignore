@@ -69,3 +69,7 @@ private/
 *.password
 #any pem file
 *.pem
+
+#vistual env
+venv/
+*env/

@@ -1,7 +1,7 @@
 # Get the default subnet
 data "aws_subnet" "default" {
   vpc_id            = data.aws_vpc.default.id
-  availability_zone = "us-east-1a"  
+  availability_zone = "us-east-1a"
 }
 
 # Create a security group
@@ -40,10 +40,10 @@ data "aws_key_pair" "demo_key_pair" {
 
 # Create an EC2 instance
 resource "aws_instance" "demo_instance" {
-  ami           = "ami-0c4f7023847b90238"
-  instance_type = "t2.micro"
-  key_name      = data.aws_key_pair.demo_key_pair.key_name
-  subnet_id     = data.aws_subnet.default.id
+  ami                    = "ami-0c4f7023847b90238"
+  instance_type          = "t2.micro"
+  key_name               = data.aws_key_pair.demo_key_pair.key_name
+  subnet_id              = data.aws_subnet.default.id
   vpc_security_group_ids = [aws_security_group.demo_security_group.id]
 
   tags = {
@@ -82,10 +82,10 @@ resource "aws_security_group" "prod_security_group" {
 
 # Create an EC2 instance for prod
 resource "aws_instance" "prod_instance" {
-  ami           = "ami-0c4f7023847b90238"
-  instance_type = "t2.micro"
-  key_name      = data.aws_key_pair.demo_key_pair.key_name
-  subnet_id     = data.aws_subnet.default.id
+  ami                    = "ami-0c4f7023847b90238"
+  instance_type          = "t2.micro"
+  key_name               = data.aws_key_pair.demo_key_pair.key_name
+  subnet_id              = data.aws_subnet.default.id
   vpc_security_group_ids = [aws_security_group.prod_security_group.id]
 
   tags = {

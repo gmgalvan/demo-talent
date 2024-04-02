@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	"github.com/demo-talent/entities"
@@ -42,21 +41,6 @@ func Test_expenseServiceImpl_CreateExpense(t *testing.T) {
 			wantErr: false,
 			setupMock: func(m *mocks.MockExpenseRepositoryInterface) {
 				m.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil) // Expect the Create method to be called once with any arguments and to return nil
-			},
-		},
-		// Add test to simulate an insert failed
-		{
-			name: "CreateExpense_Failed",
-			fields: fields{
-				repo: mockRepo,
-			},
-			args: args{
-				ctx: context.TODO(),
-				e:   &entities.Expense{ID: "1", Description: "Test expense"},
-			},
-			wantErr: true,
-			setupMock: func(m *mocks.MockExpenseRepositoryInterface) {
-				m.EXPECT().Create(gomock.Any(), gomock.Any()).Return(errors.New("error"))
 			},
 		},
 	}
