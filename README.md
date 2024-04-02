@@ -81,8 +81,8 @@ ansible-playbook -i inventory.ini playbook.yml
 ```
 
 ## Show Demo
-## Implement filters by property on expenses (Reduced steps)
-    1.- create new branch
+### Implement filters by property on expenses (Reduced steps)
+    1.- Create new branch
     2.- Implement on repo the code for filtering
     3.- create the handler
     4.- Implement unit tests
