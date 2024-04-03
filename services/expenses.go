@@ -28,7 +28,7 @@ func NewExpenseService(ctx context.Context, repo repository.ExpenseRepositoryInt
     if !ok {
 		log = logger.NewLogger(false, logger.INFO)
     }
-    return &ExpenseService{
+    return &expenseServiceImpl{
 		repo: repo, 
 		log:  log,
 	}

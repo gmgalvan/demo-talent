@@ -34,6 +34,7 @@ func main() {
 	sslmode := os.Getenv("SSL_MODE")
 
 	ctx := context.Background()
+	ctx = context.WithValue(ctx, "logger", log)
 
 	log.Log(logger.INFO, "/aws/demo-talent", "main", "Starting the server")
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
@@ -51,7 +52,7 @@ func main() {
 	}
 
 	repo := repository.NewExpenseRepository(ctx, db)
-	svc := services.NewExpenseService(repo)
+	svc := services.NewExpenseService(ctx, repo)
 
 	r := mux.NewRouter() 
 
