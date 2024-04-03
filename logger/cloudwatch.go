@@ -54,7 +54,7 @@ func (l *Logger) Log(level LogLevel, logGroupName, logStreamName, message string
         }
 
         currentTime := time.Now()
-        formattedLogStreamName := fmt.Sprintf("%d/%02d/%02d-[%s]", currentTime.Year(), currentTime.Month(), currentTime.Day(), logStreamName)
+        formattedLogStreamName := fmt.Sprintf("[%d/%02d/%02d]-[%s]", currentTime.Year(), currentTime.Month(), currentTime.Day(), logStreamName)
 
         // Check if the log group exists
         describeLogGroupsOutput, err := l.cwLogger.DescribeLogGroups(&cloudwatchlogs.DescribeLogGroupsInput{
