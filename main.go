@@ -32,7 +32,7 @@ func main() {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 	sslmode := os.Getenv("SSL_MODE")
-
+ 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "logger", log)
 
@@ -53,17 +53,18 @@ func main() {
 
 	repo := repository.NewExpenseRepository(ctx, db)
 	svc := services.NewExpenseService(ctx, repo)
-
-	r := mux.NewRouter() 
+	expensesHandlers := handlers.NewExpensesRouter(ctx, svc) 
 
 	// Register the expense handlers routes
-	r.HandleFunc("/expenses", handlers.CreateExpense(svc)).Methods("POST") 
-	r.HandleFunc("/expenses/{id}", handlers.GetExpense(svc)).Methods("GET")
-	r.HandleFunc("/expenses", handlers.UpdateExpense(svc)).Methods("PUT")
-	r.HandleFunc("/expenses", handlers.DeleteExpense(svc)).Methods("DELETE")
-	r.HandleFunc("/expenses", handlers.ListExpenses(svc)).Methods("GET")
-	r.HandleFunc("/", handlers.HelloWorld).Methods("GET")
-
+	r := mux.NewRouter()
+	
+	r.HandleFunc("/expenses", expensesHandlers.CreateExpense()).Methods("POST") 
+	r.HandleFunc("/expenses/{id}", expensesHandlers.GetExpense()).Methods("GET")
+	r.HandleFunc("/expenses", expensesHandlers.UpdateExpense()).Methods("PUT")
+	r.HandleFunc("/expenses", expensesHandlers.DeleteExpense()).Methods("DELETE")
+	r.HandleFunc("/expenses", expensesHandlers.ListExpenses()).Methods("GET")
+	
+	// Swagger Docs
 	opts := middleware.RedocOpts{SpecURL: "/swagger.json"}
 	sh := middleware.Redoc(opts, nil)
 	r.Handle("/docs", sh).Methods("GET")

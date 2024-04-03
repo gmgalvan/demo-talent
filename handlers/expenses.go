@@ -4,20 +4,38 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"fmt"
+	"context"
+	"time"
 	"github.com/demo-talent/entities"
 	"github.com/demo-talent/services"
+	"github.com/demo-talent/logger"
 	"github.com/gorilla/mux"
 )
 
-// HelloWorld is the HTTP handler for the root path.
-// swagger:route GET / HelloWorld helloWorldRequest
-// Returns a simple hello world message.
-// Responses:
-//
-//	200: okResponse
-//	500: errorResponse
-func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, world!"))
+type ExpenseHandlers interface {
+	CreateExpense() http.HandlerFunc
+    GetExpense() http.HandlerFunc
+    UpdateExpense() http.HandlerFunc
+    DeleteExpense() http.HandlerFunc
+    ListExpenses() http.HandlerFunc
+}
+
+// ExpenseRouter is the router for the expense handlers.
+type expenseRouter struct {
+	svc services.ExpenseService
+	log  *logger.Logger 
+}
+
+func NewExpensesRouter(ctx context.Context, svc services.ExpenseService) ExpenseHandlers {
+	log, ok := ctx.Value("logger").(*logger.Logger)
+    if !ok {
+		log = logger.NewLogger(false, logger.INFO)
+    }
+	return &expenseRouter{
+		svc: svc,
+		log: log,
+	}
 }
 
 // CreateExpense is the HTTP handler for creating a new expense.
@@ -28,24 +46,29 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 //	201: expenseResponse
 //	400: errorResponse
 //	500: errorResponse
-func CreateExpense(svc services.ExpenseService) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var e entities.Expense
-		if err := json.NewDecoder(r.Body).Decode(&e); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+func (rexp *expenseRouter) CreateExpense() http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        var e entities.Expense
+        if err := json.NewDecoder(r.Body).Decode(&e); err != nil {
+            http.Error(w, err.Error(), http.StatusBadRequest)
+            return
+        }
 
-		ctx := r.Context()
-		if err := svc.CreateExpense(ctx, &e); err != nil {
-			http.Error(w, "Failed to create expense", http.StatusInternalServerError)
-			return
-		}
+        ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+        defer cancel() 
 
-		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(e)
-	}
+        if err := rexp.svc.CreateExpense(ctx, &e); err != nil {
+            message := fmt.Sprintf("Failed to create expense: %s", err.Error())
+			http.Error(w, message, http.StatusInternalServerError)
+			//svc.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
+            return
+        }
+
+        w.WriteHeader(http.StatusCreated)
+        json.NewEncoder(w).Encode(e)
+    }
 }
+
 
 // GetExpense is the HTTP handler for retrieving an expense by ID.
 // swagger:route GET /expenses/{id} Expense getExpenseRequest
@@ -56,7 +79,7 @@ func CreateExpense(svc services.ExpenseService) http.HandlerFunc {
 //	400: errorResponse
 //	404: errorResponse
 //	500: errorResponse
-func GetExpense(svc services.ExpenseService) http.HandlerFunc {
+func (rexp *expenseRouter)GetExpense() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]
@@ -66,7 +89,7 @@ func GetExpense(svc services.ExpenseService) http.HandlerFunc {
 		}
 
 		ctx := r.Context()
-		expense, err := svc.GetExpenseByID(ctx, id)
+		expense, err := rexp.svc.GetExpenseByID(ctx, id)
 		if err != nil {
 			http.Error(w, "Failed to retrieve expense", http.StatusInternalServerError)
 			return
@@ -84,7 +107,7 @@ func GetExpense(svc services.ExpenseService) http.HandlerFunc {
 //	200: okResponse
 //	400: errorResponse
 //	500: errorResponse
-func UpdateExpense(svc services.ExpenseService) http.HandlerFunc {
+func (rexp *expenseRouter)UpdateExpense() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var e entities.Expense
 		if err := json.NewDecoder(r.Body).Decode(&e); err != nil {
@@ -93,8 +116,9 @@ func UpdateExpense(svc services.ExpenseService) http.HandlerFunc {
 		}
 
 		ctx := r.Context()
-		if err := svc.UpdateExpense(ctx, &e); err != nil {
-			http.Error(w, "Failed to update expense", http.StatusInternalServerError)
+		if err := rexp.svc.UpdateExpense(ctx, &e); err != nil {
+			message := fmt.Sprintf("Failed to update expense: %s", err.Error())
+			http.Error(w, message, http.StatusInternalServerError)
 			return
 		}
 
@@ -110,7 +134,7 @@ func UpdateExpense(svc services.ExpenseService) http.HandlerFunc {
 //	200: okResponse
 //	400: errorResponse
 //	500: errorResponse
-func DeleteExpense(svc services.ExpenseService) http.HandlerFunc {
+func (rexp *expenseRouter)DeleteExpense() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
 		if id == "" {
@@ -119,7 +143,7 @@ func DeleteExpense(svc services.ExpenseService) http.HandlerFunc {
 		}
 
 		ctx := r.Context()
-		if err := svc.DeleteExpense(ctx, id); err != nil {
+		if err := rexp.svc.DeleteExpense(ctx, id); err != nil {
 			http.Error(w, "Failed to delete expense", http.StatusInternalServerError)
 			return
 		}
@@ -136,7 +160,7 @@ func DeleteExpense(svc services.ExpenseService) http.HandlerFunc {
 //	200: expenseResponse
 //	400: errorResponse
 //	500: errorResponse
-func ListExpenses(svc services.ExpenseService) http.HandlerFunc {
+func (rexp *expenseRouter)ListExpenses() http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         pageStr := r.URL.Query().Get("page")
         limitStr := r.URL.Query().Get("limit")
@@ -159,7 +183,7 @@ func ListExpenses(svc services.ExpenseService) http.HandlerFunc {
         }
 
         ctx := r.Context()
-        expenses, err := svc.ListExpenses(ctx, page, limit)
+        expenses, err := rexp.svc.ListExpenses(ctx, page, limit)
         if err != nil {
             http.Error(w, "Failed to retrieve expenses", http.StatusInternalServerError)
             return
