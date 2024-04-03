@@ -3,6 +3,7 @@ module github.com/demo-talent
 go 1.20
 
 require (
+	github.com/aws/aws-sdk-go v1.49.6
 	github.com/go-openapi/runtime v0.28.0
 	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/golang/mock v1.6.0
@@ -28,6 +29,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect

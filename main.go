@@ -16,9 +16,11 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq" 
+	"github.com/demo-talent/logger"
 )
 
 func main() {
+	logger.LogToCloudWatch("demo-talent", "main", "Starting the server")
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
@@ -37,13 +39,7 @@ func main() {
 
 	// Run database migrations
 	if err := runMigrations(db); err != nil {
-		log.Println("Database connection variables:")
-        log.Println("DB_HOST:", dbHost)
-        log.Println("DB_PORT:", dbPort)
-        log.Println("DB_USER:", dbUser)
-        log.Println("DB_PASSWORD:", dbPassword)
-        log.Println("DB_NAME:", dbName)
-        log.Fatal("Error running migrations:", err)
+		log.Fatal("Error running migrations:", err)
 	}
 
 	repo := repository.NewExpenseRepository(db)
