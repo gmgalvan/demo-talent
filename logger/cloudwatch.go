@@ -31,7 +31,7 @@ func NewLogger(isDebug bool) *Logger {
 }
 
 func (l *Logger) Log(logGroupName, logStreamName, message string) {
-	if l.isDebug {
+    if l.isDebug {
         log.Printf("[DEBUG] %s", message)
         return
     }
@@ -50,13 +50,36 @@ func (l *Logger) Log(logGroupName, logStreamName, message string) {
 
     if len(describeLogGroupsOutput.LogGroups) == 0 {
         // Log group doesn't exist, create it
-		fmt.Println("Creating log group: ", logGroupName)
-        createLogGroupOutput, err := l.cwLogger.CreateLogGroup(&cloudwatchlogs.CreateLogGroupInput{
+        fmt.Println("Creating log group:", logGroupName)
+        _, err := l.cwLogger.CreateLogGroup(&cloudwatchlogs.CreateLogGroupInput{
             LogGroupName: aws.String(logGroupName),
         })
-        fmt.Println("Log group created", createLogGroupOutput)
+
         if err != nil {
             fmt.Println("Error creating log group:", err)
+            os.Exit(1)
+        }
+    }
+
+    // Check if the log stream exists
+    describeLogStreamsOutput, err := l.cwLogger.DescribeLogStreams(&cloudwatchlogs.DescribeLogStreamsInput{
+        LogGroupName:        aws.String(logGroupName),
+        LogStreamNamePrefix: aws.String(logStreamName),
+    })
+
+    if err != nil {
+        fmt.Println("Error describing log streams:", err)
+        os.Exit(1)
+    }
+
+    if len(describeLogStreamsOutput.LogStreams) == 0 {
+        _, err := l.cwLogger.CreateLogStream(&cloudwatchlogs.CreateLogStreamInput{
+            LogGroupName:  aws.String(logGroupName),
+            LogStreamName: aws.String(logStreamName),
+        })
+
+        if err != nil {
+            fmt.Println("Error creating log stream:", err)
             os.Exit(1)
         }
     }
