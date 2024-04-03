@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/demo-talent/entities"
-	"github.com/demo-talent/repository/mocks"
+	"github.com/demo-talent/internal/entities"
+	"github.com/demo-talent/internal/repository/mocks"
 	"github.com/golang/mock/gomock"
 )
 

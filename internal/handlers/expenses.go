@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"context"
 	"time"
-	"github.com/demo-talent/entities"
-	"github.com/demo-talent/services"
+	"github.com/demo-talent/internal/entities"
+	"github.com/demo-talent/internal/services"
 	"github.com/demo-talent/logger"
 	"github.com/gorilla/mux"
 )

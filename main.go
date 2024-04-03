@@ -6,26 +6,19 @@ import (
 	"net/http"
 	"os"
 	"context"
-	"github.com/demo-talent/handlers"
-	"github.com/demo-talent/repository"
-	"github.com/demo-talent/services"
-	"github.com/go-openapi/runtime/middleware"
+	"github.com/demo-talent/internal/handlers"
+	"github.com/demo-talent/internal/repository"
+	"github.com/demo-talent/internal/services"
+	"github.com/demo-talent/internal/routes"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq" 
 	"github.com/demo-talent/logger"
-)
+) 
 
 func main() {
-	isDebug := os.Getenv("DEBUG") == "true"
-    logLevel := logger.INFO
-    if isDebug {
-        logLevel = logger.DEBUG 
-    }
-    log := logger.NewLogger(isDebug, logLevel) // Default to INFO
-
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
@@ -33,9 +26,17 @@ func main() {
 	dbName := os.Getenv("DB_NAME")
 	sslmode := os.Getenv("SSL_MODE")
  
+	// Set up the logger
+	isDebug := os.Getenv("DEBUG") == "true"
+    logLevel := logger.INFO
+    if isDebug {
+        logLevel = logger.DEBUG 
+    }
+    log := logger.NewLogger(isDebug, logLevel) // Default to INFO
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "logger", log)
 
+	// Set up the database connection
 	log.Log(logger.INFO, "/aws/demo-talent", "main", "Starting the server")
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		dbHost, dbPort, dbUser, dbPassword, dbName, sslmode)
@@ -54,23 +55,13 @@ func main() {
 	repo := repository.NewExpenseRepository(ctx, db)
 	svc := services.NewExpenseService(ctx, repo)
 	expensesHandlers := handlers.NewExpensesRouter(ctx, svc) 
+	
 
-	// Register the expense handlers routes
+	// Set up the routes
 	r := mux.NewRouter()
-	
-	r.HandleFunc("/expenses", expensesHandlers.CreateExpense()).Methods("POST") 
-	r.HandleFunc("/expenses/{id}", expensesHandlers.GetExpense()).Methods("GET")
-	r.HandleFunc("/expenses", expensesHandlers.UpdateExpense()).Methods("PUT")
-	r.HandleFunc("/expenses", expensesHandlers.DeleteExpense()).Methods("DELETE")
-	r.HandleFunc("/expenses", expensesHandlers.ListExpenses()).Methods("GET")
-	
-	// Swagger Docs
-	opts := middleware.RedocOpts{SpecURL: "/swagger.json"}
-	sh := middleware.Redoc(opts, nil)
-	r.Handle("/docs", sh).Methods("GET")
-	r.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./docs/swagger.json")
-	})
+	routes.SetupExpensesRoutes(r, expensesHandlers)
+	routes.SetupSwaggerRoutes(r)
+
 
 	log.Log(logger.INFO, "/aws/demo-talent", "main", "Server started on port 8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {

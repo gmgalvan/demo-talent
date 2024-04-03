@@ -54,11 +54,11 @@ swagger generate spec -o ./swagger.json
 - Create mocks with go mock
 ```bash
 cd services
-mockgen -package=mocks -destination=./mocks/mock_expense_service.go github.com/demo-talent/services ExpenseService
+mockgen -package=mocks -destination=./mocks/mock_expense_service.go github.com/demo-talent/internal/services ExpenseService
 ```
 ```bash
 cd repository
-mockgen -package=mocks -destination=./mocks/mock_expense_repository.go github.com/demo-talent/repository ExpenseRepositoryInterface
+mockgen -package=mocks -destination=./mocks/mock_expense_repository.go github.com/demo-talent/internal/repository ExpenseRepositoryInterface
 ```
 - Run tests
 ```bash

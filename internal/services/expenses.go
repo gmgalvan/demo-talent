@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 	"github.com/demo-talent/logger"
-	"github.com/demo-talent/entities"
-	"github.com/demo-talent/repository"
+	"github.com/demo-talent/internal/entities"
+	"github.com/demo-talent/internal/repository"
 )
 
 // ExpenseService defines the interface for expense-related operations.

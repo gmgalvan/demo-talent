@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/demo-talent/entities"
+	"github.com/demo-talent/internal/entities"
 	_ "github.com/lib/pq" // PostgreSQL driver
 	"github.com/demo-talent/logger"
 )
