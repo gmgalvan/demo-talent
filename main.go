@@ -48,7 +48,7 @@ func main() {
 	defer db.Close()
 
 	// Run database migrations
-	if err := runMigrations(db); err != nil {
+	if err := runMigrations(db, log); err != nil {
 		log.Log(logger.FATAL, "/aws/demo-talent", "main", "Error running migrations")
 	}
 
@@ -69,18 +69,24 @@ func main() {
 	}
 }
 
-func runMigrations(db *sql.DB) error {
+func runMigrations(db *sql.DB, log *logger.Logger) error {
     driver, err := postgres.WithInstance(db, &postgres.Config{})
     if err != nil {
+		message := fmt.Sprintf("Error creating migration driver: %v", err)
+		log.Log(logger.ERROR, "/aws/demo-talent", "main", message)
         return fmt.Errorf("error creating migration driver: %w", err)
     }
 
 	m, err := migrate.NewWithDatabaseInstance("file://migrations", "postgres", driver)
 	if err != nil {
+		message := fmt.Sprintf("Error creating migration instance: %v", err)
+		log.Log(logger.ERROR, "/aws/demo-talent", "main", message)
 		return fmt.Errorf("error creating migration instance: %w", err)
 	}
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		message := fmt.Sprintf("Error running migrations: %v", err)
+		log.Log(logger.ERROR, "/aws/demo-talent", "main", message)
 		return fmt.Errorf("error running migrations: %w", err)
 	}
 

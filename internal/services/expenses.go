@@ -53,6 +53,7 @@ func (s *expenseServiceImpl) GetExpenseByID(ctx context.Context, id string) (*en
 func (s *expenseServiceImpl) UpdateExpense(ctx context.Context, e *entities.Expense) error {
 	_, err := s.repo.GetByID(ctx, e.ID)
 	if err != nil {
+		s.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseService", "Error updating expenses")
 		return err
 	}
 
@@ -63,6 +64,7 @@ func (s *expenseServiceImpl) UpdateExpense(ctx context.Context, e *entities.Expe
 func (s *expenseServiceImpl) DeleteExpense(ctx context.Context, id string) error {
 	_, err := s.repo.GetByID(ctx, id)
 	if err != nil {
+		s.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseService", "Error deleting expenses")
 		return err
 	}
 

@@ -50,6 +50,8 @@ func (rexp *expenseRouter) CreateExpense() http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         var e entities.Expense
         if err := json.NewDecoder(r.Body).Decode(&e); err != nil {
+			message := fmt.Sprintf("Failed to decode request body on create expenses: %s", err.Error())
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
             http.Error(w, err.Error(), http.StatusBadRequest)
             return
         }
@@ -59,8 +61,8 @@ func (rexp *expenseRouter) CreateExpense() http.HandlerFunc {
 
         if err := rexp.svc.CreateExpense(ctx, &e); err != nil {
             message := fmt.Sprintf("Failed to create expense: %s", err.Error())
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
 			http.Error(w, message, http.StatusInternalServerError)
-			//svc.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
             return
         }
 
@@ -84,6 +86,8 @@ func (rexp *expenseRouter)GetExpense() http.HandlerFunc {
 		vars := mux.Vars(r)
 		id := vars["id"]
 		if id == "" {
+			message := "Missing expense ID on get expenses"
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
 			http.Error(w, "Missing expense ID", http.StatusBadRequest)
 			return
 		}
@@ -111,6 +115,8 @@ func (rexp *expenseRouter)UpdateExpense() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var e entities.Expense
 		if err := json.NewDecoder(r.Body).Decode(&e); err != nil {
+			message := fmt.Sprintf("Failed to decode request body on update expenses: %s", err.Error())
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -118,6 +124,7 @@ func (rexp *expenseRouter)UpdateExpense() http.HandlerFunc {
 		ctx := r.Context()
 		if err := rexp.svc.UpdateExpense(ctx, &e); err != nil {
 			message := fmt.Sprintf("Failed to update expense: %s", err.Error())
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
 			http.Error(w, message, http.StatusInternalServerError)
 			return
 		}
@@ -138,12 +145,16 @@ func (rexp *expenseRouter)DeleteExpense() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
 		if id == "" {
+			message := "Missing expense ID on delete expenses"
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
 			http.Error(w, "Missing expense ID", http.StatusBadRequest)
 			return
 		}
 
 		ctx := r.Context()
 		if err := rexp.svc.DeleteExpense(ctx, id); err != nil {
+			message := fmt.Sprintf("Failed to delete expense: %s", err.Error())
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
 			http.Error(w, "Failed to delete expense", http.StatusInternalServerError)
 			return
 		}
@@ -166,18 +177,24 @@ func (rexp *expenseRouter)ListExpenses() http.HandlerFunc {
         limitStr := r.URL.Query().Get("limit")
 
         if pageStr == "" || limitStr == "" {
-            http.Error(w, "Missing page or limit", http.StatusBadRequest)
+			message := "Missing page or limit on list expenses"
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
+            http.Error(w, message, http.StatusBadRequest)
             return
         }
 
         page, err := strconv.Atoi(pageStr)
         if err != nil {
+			message := fmt.Sprintf("Invalid page value on list expenses: %s", err.Error())
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
             http.Error(w, "Invalid page value", http.StatusBadRequest)
             return
         }
 
         limit, err := strconv.Atoi(limitStr)
         if err != nil {
+			message := fmt.Sprintf("Invalid limit value on list expenses: %s", err.Error())
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
             http.Error(w, "Invalid limit value", http.StatusBadRequest)
             return
         }
@@ -185,7 +202,9 @@ func (rexp *expenseRouter)ListExpenses() http.HandlerFunc {
         ctx := r.Context()
         expenses, err := rexp.svc.ListExpenses(ctx, page, limit)
         if err != nil {
-            http.Error(w, "Failed to retrieve expenses", http.StatusInternalServerError)
+			message := fmt.Sprintf("Failed to retrieve expenses: %s", err.Error())
+			rexp.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", message)
+            http.Error(w, message, http.StatusInternalServerError)
             return
         }
 

@@ -1,5 +1,42 @@
-{
-    "id": "123",
-    "description": "Updated test expense",
-    "amount": 150.0
-}
+[
+    {
+        "description": "Milk",
+        "amount": 9.04
+    },
+    {
+        "description": "Eggs",
+        "amount": 1.7
+    },
+    {
+        "description": "Bread",
+        "amount": 4.0
+    },
+    {
+        "description": "Apples",
+        "amount": 17.8
+    },
+    {
+        "description": "Chicken Breast",
+        "amount": 4.92
+    },
+    {
+        "description": "Rice",
+        "amount": 5.93
+    },
+    {
+        "description": "Pasta",
+        "amount": 14.4
+    },
+    {
+        "description": "Cheese",
+        "amount": 9.52
+    },
+    {
+        "description": "Tomatoes",
+        "amount": 4.83
+    },
+    {
+        "description": "Cereal",
+        "amount": 5.3
+    }
+]
