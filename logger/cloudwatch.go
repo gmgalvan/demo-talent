@@ -95,6 +95,7 @@ func (l *Logger) Log(level LogLevel, logGroupName, logStreamName, message string
             }
             return
         }
+        fmt.Println("Checking if log stream exists end", err, describeLogStreamsOutput, len(describeLogStreamsOutput.LogStreams))
         if len(describeLogStreamsOutput.LogStreams) == 0 {
             _, err := l.cwLogger.CreateLogStream(&cloudwatchlogs.CreateLogStreamInput{
                 LogGroupName:  aws.String(logGroupName),
