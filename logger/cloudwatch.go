@@ -50,12 +50,11 @@ func (l *Logger) Log(logGroupName, logStreamName, message string) {
 
     if len(describeLogGroupsOutput.LogGroups) == 0 {
         // Log group doesn't exist, create it
+		fmt.Println("Creating log group: ", logGroupName)
         createLogGroupOutput, err := l.cwLogger.CreateLogGroup(&cloudwatchlogs.CreateLogGroupInput{
             LogGroupName: aws.String(logGroupName),
         })
-
         fmt.Println("Log group created", createLogGroupOutput)
-
         if err != nil {
             fmt.Println("Error creating log group:", err)
             os.Exit(1)
