@@ -78,6 +78,21 @@ func (mr *MockExpenseServiceMockRecorder) GetExpenseByID(arg0, arg1 interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExpenseByID", reflect.TypeOf((*MockExpenseService)(nil).GetExpenseByID), arg0, arg1)
 }
 
+// ListExpenses mocks base method.
+func (m *MockExpenseService) ListExpenses(arg0 context.Context, arg1, arg2 int) ([]entities.Expense, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListExpenses", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]entities.Expense)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListExpenses indicates an expected call of ListExpenses.
+func (mr *MockExpenseServiceMockRecorder) ListExpenses(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListExpenses", reflect.TypeOf((*MockExpenseService)(nil).ListExpenses), arg0, arg1, arg2)
+}
+
 // UpdateExpense mocks base method.
 func (m *MockExpenseService) UpdateExpense(arg0 context.Context, arg1 *entities.Expense) error {
 	m.ctrl.T.Helper()
