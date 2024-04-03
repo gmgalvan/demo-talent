@@ -1,7 +1,42 @@
 {
   "swagger": "2.0",
   "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "HelloWorld"
+        ],
+        "summary": "Returns a simple hello world message.",
+        "operationId": "helloWorldRequest",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/okResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      }
+    },
     "/expenses": {
+      "get": {
+        "tags": [
+          "Expense"
+        ],
+        "summary": "Retrieves a list of expenses with pagination.",
+        "operationId": "listExpensesRequest",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/expenseResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "500": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
+      },
       "put": {
         "tags": [
           "Expense"

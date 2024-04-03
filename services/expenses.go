@@ -15,6 +15,7 @@ type ExpenseService interface {
 	GetExpenseByID(ctx context.Context, id string) (*entities.Expense, error)
 	UpdateExpense(ctx context.Context, e *entities.Expense) error
 	DeleteExpense(ctx context.Context, id string) error
+	ListExpenses(ctx context.Context, page, limit int) ([]entities.Expense, error)
 }
 
 type expenseServiceImpl struct {
@@ -66,6 +67,12 @@ func (s *expenseServiceImpl) DeleteExpense(ctx context.Context, id string) error
 	}
 
 	return s.repo.Delete(ctx, id)
+}
+
+// ListExpenses retrieves a list of expenses with pagination.
+func (s *expenseServiceImpl) ListExpenses(ctx context.Context, page, limit int) ([]entities.Expense, error) {
+    offset := (page - 1) * limit
+    return s.repo.List(ctx, limit, offset)
 }
 
 // generateUniqueID generates a new unique ID for an expense.

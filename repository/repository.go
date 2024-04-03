@@ -15,6 +15,7 @@ type ExpenseRepositoryInterface interface {
 	GetByID(ctx context.Context, id string) (*entities.Expense, error)
 	Update(ctx context.Context, e *entities.Expense) error
 	Delete(ctx context.Context, id string) error
+	List(ctx context.Context, limit, offset int) ([]entities.Expense, error)
 }
 
 type ExpenseRepository struct {
@@ -98,4 +99,33 @@ func (r *ExpenseRepository) Delete(ctx context.Context, id string) error {
 		return fmt.Errorf("error deleting expense: %w", err)
 	}
 	return nil
+}
+
+// List retrieves expenses from the database with pagination.
+func (r *ExpenseRepository) List(ctx context.Context, limit, offset int) ([]entities.Expense, error) {
+    query := `
+        SELECT id, description, amount, date_creation
+        FROM expenses
+        ORDER BY date_creation DESC
+        LIMIT $1 OFFSET $2
+    `
+    rows, err := r.db.QueryContext(ctx, query, limit, offset)
+    if err != nil {
+        r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error listing expenses")
+        return nil, fmt.Errorf("error listing expenses: %w", err)
+    }
+    defer rows.Close()
+
+    var expenses []entities.Expense
+    for rows.Next() {
+        var e entities.Expense
+        err := rows.Scan(&e.ID, &e.Description, &e.Amount, &e.DateCreation)
+        if err != nil {
+            r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error scanning expenses")
+            return nil, fmt.Errorf("error scanning expenses: %w", err)
+        }
+        expenses = append(expenses, e)
+    }
+
+    return expenses, nil
 }

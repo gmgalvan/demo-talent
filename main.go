@@ -57,10 +57,11 @@ func main() {
 	r := mux.NewRouter() 
 
 	// Register the expense handlers routes
-	r.HandleFunc("/expenses", handlers.CreateExpense(svc)).Methods("POST") // with ID
-	r.HandleFunc("/expenses", handlers.GetExpense(svc)).Methods("GET")
+	r.HandleFunc("/expenses", handlers.CreateExpense(svc)).Methods("POST") 
+	r.HandleFunc("/expenses/{id}", handlers.GetExpense(svc)).Methods("GET")
 	r.HandleFunc("/expenses", handlers.UpdateExpense(svc)).Methods("PUT")
 	r.HandleFunc("/expenses", handlers.DeleteExpense(svc)).Methods("DELETE")
+	r.HandleFunc("/expenses", handlers.ListExpenses(svc)).Methods("GET")
 	r.HandleFunc("/", handlers.HelloWorld).Methods("GET")
 
 	opts := middleware.RedocOpts{SpecURL: "/swagger.json"}

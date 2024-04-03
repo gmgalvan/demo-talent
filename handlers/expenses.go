@@ -3,9 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-
+	"strconv"
 	"github.com/demo-talent/entities"
 	"github.com/demo-talent/services"
+	"github.com/gorilla/mux"
 )
 
 // HelloWorld is the HTTP handler for the root path.
@@ -57,7 +58,8 @@ func CreateExpense(svc services.ExpenseService) http.HandlerFunc {
 //	500: errorResponse
 func GetExpense(svc services.ExpenseService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id := r.URL.Query().Get("id")
+		vars := mux.Vars(r)
+		id := vars["id"]
 		if id == "" {
 			http.Error(w, "Missing expense ID", http.StatusBadRequest)
 			return
@@ -124,6 +126,47 @@ func DeleteExpense(svc services.ExpenseService) http.HandlerFunc {
 
 		w.WriteHeader(http.StatusOK)
 	}
+}
+
+// ListExpenses is the HTTP handler for retrieving a list of expenses with pagination.
+// swagger:route GET /expenses Expense listExpensesRequest
+// Retrieves a list of expenses with pagination.
+// Responses:
+//
+//	200: expenseResponse
+//	400: errorResponse
+//	500: errorResponse
+func ListExpenses(svc services.ExpenseService) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        pageStr := r.URL.Query().Get("page")
+        limitStr := r.URL.Query().Get("limit")
+
+        if pageStr == "" || limitStr == "" {
+            http.Error(w, "Missing page or limit", http.StatusBadRequest)
+            return
+        }
+
+        page, err := strconv.Atoi(pageStr)
+        if err != nil {
+            http.Error(w, "Invalid page value", http.StatusBadRequest)
+            return
+        }
+
+        limit, err := strconv.Atoi(limitStr)
+        if err != nil {
+            http.Error(w, "Invalid limit value", http.StatusBadRequest)
+            return
+        }
+
+        ctx := r.Context()
+        expenses, err := svc.ListExpenses(ctx, page, limit)
+        if err != nil {
+            http.Error(w, "Failed to retrieve expenses", http.StatusInternalServerError)
+            return
+        }
+
+        json.NewEncoder(w).Encode(expenses)
+    }
 }
 
 // swagger:parameters createExpenseRequest

@@ -14,6 +14,7 @@ services:
       - DB_PASSWORD=mysecretpassword
       - DB_NAME=mydatabase
       - SSL_MODE=disable
+      - DEBUG=true
   db:
     image: postgres:13
     ports:
@@ -23,7 +24,7 @@ services:
       - POSTGRES_PASSWORD=mysecretpassword
       - POSTGRES_DB=mydatabase
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_app_data:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  postgres_app_data:
