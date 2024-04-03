@@ -23,7 +23,6 @@ func NewLogger(isDebug bool) *Logger {
     if err != nil {
         log.Fatal("Error creating AWS session:", err)
     }
-
     return &Logger{
         cwLogger: cloudwatchlogs.New(sess),
         isDebug:  isDebug,
@@ -36,25 +35,24 @@ func (l *Logger) Log(logGroupName, logStreamName, message string) {
         return
     }
 
+    currentTime := time.Now()
+    formattedLogStreamName := fmt.Sprintf("%d/%02d/%02d-[%s]-%d", currentTime.Year(), currentTime.Month(), currentTime.Day(), logStreamName, currentTime.Unix())
+
     // Check if the log group exists
     describeLogGroupsOutput, err := l.cwLogger.DescribeLogGroups(&cloudwatchlogs.DescribeLogGroupsInput{
         LogGroupNamePrefix: aws.String(logGroupName),
     })
-
     fmt.Println("Checking if log group exists end", err, describeLogGroupsOutput, len(describeLogGroupsOutput.LogGroups))
-
     if err != nil {
         fmt.Println("Error describing log groups:", err)
         os.Exit(1)
     }
-
     if len(describeLogGroupsOutput.LogGroups) == 0 {
         // Log group doesn't exist, create it
         fmt.Println("Creating log group:", logGroupName)
         _, err := l.cwLogger.CreateLogGroup(&cloudwatchlogs.CreateLogGroupInput{
             LogGroupName: aws.String(logGroupName),
         })
-
         if err != nil {
             fmt.Println("Error creating log group:", err)
             os.Exit(1)
@@ -64,20 +62,17 @@ func (l *Logger) Log(logGroupName, logStreamName, message string) {
     // Check if the log stream exists
     describeLogStreamsOutput, err := l.cwLogger.DescribeLogStreams(&cloudwatchlogs.DescribeLogStreamsInput{
         LogGroupName:        aws.String(logGroupName),
-        LogStreamNamePrefix: aws.String(logStreamName),
+        LogStreamNamePrefix: aws.String(formattedLogStreamName),
     })
-
     if err != nil {
         fmt.Println("Error describing log streams:", err)
         os.Exit(1)
     }
-
     if len(describeLogStreamsOutput.LogStreams) == 0 {
         _, err := l.cwLogger.CreateLogStream(&cloudwatchlogs.CreateLogStreamInput{
             LogGroupName:  aws.String(logGroupName),
-            LogStreamName: aws.String(logStreamName),
+            LogStreamName: aws.String(formattedLogStreamName),
         })
-
         if err != nil {
             fmt.Println("Error creating log stream:", err)
             os.Exit(1)
@@ -85,10 +80,9 @@ func (l *Logger) Log(logGroupName, logStreamName, message string) {
     }
 
     timestamp := time.Now().UnixNano() / int64(time.Millisecond)
-
     _, err = l.cwLogger.PutLogEvents(&cloudwatchlogs.PutLogEventsInput{
         LogGroupName:  aws.String(logGroupName),
-        LogStreamName: aws.String(logStreamName),
+        LogStreamName: aws.String(formattedLogStreamName),
         LogEvents: []*cloudwatchlogs.InputLogEvent{
             {
                 Message:   aws.String(message),
@@ -96,7 +90,6 @@ func (l *Logger) Log(logGroupName, logStreamName, message string) {
             },
         },
     })
-
     if err != nil {
         fmt.Println("Error logging to CloudWatch:", err)
         os.Exit(1)

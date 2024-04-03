@@ -30,7 +30,7 @@ func main() {
 	dbName := os.Getenv("DB_NAME")
 	sslmode := os.Getenv("SSL_MODE")
 
-	logger.Log("demo-talent", "main", "Starting the server")
+	logger.Log("/aws/demo-talent", "main", "Starting the server")
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		dbHost, dbPort, dbUser, dbPassword, dbName, sslmode)
