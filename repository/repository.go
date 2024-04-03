@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 
 	"github.com/demo-talent/entities"
 	_ "github.com/lib/pq" // PostgreSQL driver
+	"github.com/demo-talent/logger"
 )
 
 type ExpenseRepositoryInterface interface {
@@ -19,22 +19,31 @@ type ExpenseRepositoryInterface interface {
 
 type ExpenseRepository struct {
 	db *sql.DB
+	log  *logger.Logger
 }
 
 // NewExpenseRepository creates a new instance of ExpenseRepository.
-func NewExpenseRepository(db *sql.DB) ExpenseRepositoryInterface {
-	return &ExpenseRepository{db: db}
+func NewExpenseRepository(ctx context.Context, db *sql.DB) ExpenseRepositoryInterface {
+	log, ok := ctx.Value("logger").(*logger.Logger)
+    if !ok {
+		log = logger.NewLogger(false, logger.INFO)
+    }
+	return &ExpenseRepository{
+		db: db,
+		log: log,
+	}
 }
 
 // Create saves a new expense in the database.
 func (r *ExpenseRepository) Create(ctx context.Context, e *entities.Expense) error {
+	r.log.Log(logger.INFO, "/aws/demo-talent", "ExpenseRepository", "Creating expense")
 	query := `
         INSERT INTO expenses (id, description, amount, date_creation)
         VALUES ($1, $2, $3, $4)
     `
 	_, err := r.db.ExecContext(ctx, query, e.ID, e.Description, e.Amount, e.DateCreation)
 	if err != nil {
-		log.Printf("Error creating expense: %v", err)
+		r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error creating expense")
 		return fmt.Errorf("error creating expense: %w", err)
 	}
 	return nil
@@ -55,7 +64,7 @@ func (r *ExpenseRepository) GetByID(ctx context.Context, id string) (*entities.E
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("expense not found with ID: %s", id)
 		}
-		log.Printf("Error retrieving expense: %v", err)
+		r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error retrieving expense")
 		return nil, fmt.Errorf("error retrieving expense: %w", err)
 	}
 
@@ -71,7 +80,7 @@ func (r *ExpenseRepository) Update(ctx context.Context, e *entities.Expense) err
     `
 	_, err := r.db.ExecContext(ctx, query, e.Description, e.Amount, e.ID)
 	if err != nil {
-		log.Printf("Error updating expense: %v", err)
+		r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error updating expense")
 		return fmt.Errorf("error updating expense: %w", err)
 	}
 	return nil
@@ -85,7 +94,7 @@ func (r *ExpenseRepository) Delete(ctx context.Context, id string) error {
     `
 	_, err := r.db.ExecContext(ctx, query, id)
 	if err != nil {
-		log.Printf("Error deleting expense: %v", err)
+		r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error deleting expense")
 		return fmt.Errorf("error deleting expense: %w", err)
 	}
 	return nil

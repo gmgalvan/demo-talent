@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
-
+	"github.com/demo-talent/logger"
 	"github.com/demo-talent/entities"
 	"github.com/demo-talent/repository"
 )
@@ -19,11 +19,19 @@ type ExpenseService interface {
 
 type expenseServiceImpl struct {
 	repo repository.ExpenseRepositoryInterface
+	log  *logger.Logger
 }
 
 // NewExpenseService creates a new instance of ExpenseService.
-func NewExpenseService(repo repository.ExpenseRepositoryInterface) ExpenseService {
-	return &expenseServiceImpl{repo: repo}
+func NewExpenseService(ctx context.Context, repo repository.ExpenseRepositoryInterface) ExpenseService {
+	log, ok := ctx.Value("logger").(*logger.Logger)
+    if !ok {
+		log = logger.NewLogger(false, logger.INFO)
+    }
+    return &ExpenseService{
+		repo: repo, 
+		log:  log,
+	}
 }
 
 // CreateExpense creates a new expense.

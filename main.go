@@ -22,9 +22,9 @@ func main() {
 	isDebug := os.Getenv("DEBUG") == "true"
     logLevel := logger.INFO
     if isDebug {
-        logLevel = logger.DEBUG
+        logLevel = logger.DEBUG 
     }
-    log := logger.NewLogger(isDebug, logLevel) // Default info
+    log := logger.NewLogger(isDebug, logLevel) // Default to INFO
 
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
@@ -32,6 +32,8 @@ func main() {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 	sslmode := os.Getenv("SSL_MODE")
+
+	ctx := context.Background()
 
 	log.Log(logger.INFO, "/aws/demo-talent", "main", "Starting the server")
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
@@ -48,10 +50,10 @@ func main() {
 		log.Log(logger.FATAL, "/aws/demo-talent", "main", "Error running migrations")
 	}
 
-	repo := repository.NewExpenseRepository(db)
+	repo := repository.NewExpenseRepository(ctx, db)
 	svc := services.NewExpenseService(repo)
 
-	r := mux.NewRouter()
+	r := mux.NewRouter() 
 
 	// Register the expense handlers routes
 	r.HandleFunc("/expenses", handlers.CreateExpense(svc)).Methods("POST") // with ID
