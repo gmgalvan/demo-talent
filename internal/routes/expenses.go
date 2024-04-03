@@ -4,7 +4,7 @@ import (
 	"github.com/demo-talent/internal/handlers"
 	"github.com/gorilla/mux"
 )
-
+ 
 func SetupExpensesRoutes(r *mux.Router, expensesHandlers handlers.ExpenseHandlers) {
 	r.HandleFunc("/expenses", expensesHandlers.CreateExpense()).Methods("POST")
 	r.HandleFunc("/expenses/{id}", expensesHandlers.GetExpense()).Methods("GET")

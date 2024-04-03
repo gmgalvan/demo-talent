@@ -55,11 +55,15 @@ func main() {
 	repo := repository.NewExpenseRepository(ctx, db)
 	svc := services.NewExpenseService(ctx, repo)
 	expensesHandlers := handlers.NewExpensesRouter(ctx, svc) 
-	
+
+	repoBudget := repository.NewBudgetRepository(ctx, db)
+	svcBudget := services.NewBudgetService(ctx, repoBudget)
+	budgetHandlers := handlers.NewBudgetHandlers(ctx, svcBudget)
 
 	// Set up the routes
 	r := mux.NewRouter()
 	routes.SetupExpensesRoutes(r, expensesHandlers)
+	routes.SetupBudgetRoutes(r, budgetHandlers)
 	routes.SetupSwaggerRoutes(r)
 
 
@@ -70,6 +74,7 @@ func main() {
 }
 
 func runMigrations(db *sql.DB, log *logger.Logger) error {
+	log.Log(logger.INFO, "/aws/demo-talent", "main", "Running migrations")
     driver, err := postgres.WithInstance(db, &postgres.Config{})
     if err != nil {
 		message := fmt.Sprintf("Error creating migration driver: %v", err)
@@ -89,6 +94,6 @@ func runMigrations(db *sql.DB, log *logger.Logger) error {
 		log.Log(logger.ERROR, "/aws/demo-talent", "main", message)
 		return fmt.Errorf("error running migrations: %w", err)
 	}
-
+	log.Log(logger.INFO, "/aws/demo-talent", "main", "Migrations ran successfully")
 	return nil
 }

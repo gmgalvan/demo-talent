@@ -54,11 +54,14 @@ swagger generate spec -o ./swagger.json
 - Create mocks with go mock
 ```bash
 cd services
-mockgen -package=mocks -destination=./mocks/mock_expense_service.go github.com/demo-talent/internal/services ExpenseService
+mockgen -package=mocks -destination=./mocks/mock_budget_service.go github.com/demo-talent/internal/services BudgetServiceInterface
+
+ce repository
+mockgen -package=mocks -destination=./mocks/mock_budget_repository.go github.com/demo-talent/internal/repository BudgetRepositoryInterface
 ```
 ```bash
 cd repository
-mockgen -package=mocks -destination=./mocks/mock_expense_repository.go github.com/demo-talent/internal/repository ExpenseRepositoryInterface
+mockgen -package=mocks -destination=./mocks/mock_expense_repository.go github.com/demo-talent/internal/repository BudgetServiceInterface
 ```
 - Run tests
 ```bash
@@ -79,3 +82,5 @@ ec2-instance ansible_host=<public-ip-address>
 ansible-playbook -i hosts docker-playbook.yml --private-key /path/to/private-key.pem -e "db_password=your_secure_password"
 ansible-playbook -i inventory.ini playbook.yml
 ```
+
+

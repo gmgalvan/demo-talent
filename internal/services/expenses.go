@@ -38,9 +38,7 @@ func NewExpenseService(ctx context.Context, repo repository.ExpenseRepositoryInt
 // CreateExpense creates a new expense.
 func (s *expenseServiceImpl) CreateExpense(ctx context.Context, e *entities.Expense) error {
 	e.ID = generateUniqueID()
-
 	e.DateCreation = time.Now().Unix()
-
 	return s.repo.Create(ctx, e)
 }
 
