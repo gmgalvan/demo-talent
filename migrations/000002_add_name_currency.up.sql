@@ -1,0 +1,3 @@
+ALTER TABLE expenses
+ADD COLUMN name VARCHAR(255),
+ADD COLUMN currency VARCHAR(50);

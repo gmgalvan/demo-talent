@@ -1,23 +1,6 @@
 {
   "swagger": "2.0",
   "paths": {
-    "/": {
-      "get": {
-        "tags": [
-          "HelloWorld"
-        ],
-        "summary": "Returns a simple hello world message.",
-        "operationId": "helloWorldRequest",
-        "responses": {
-          "200": {
-            "$ref": "#/responses/okResponse"
-          },
-          "500": {
-            "$ref": "#/responses/errorResponse"
-          }
-        }
-      }
-    },
     "/expenses": {
       "get": {
         "tags": [
@@ -60,6 +43,10 @@
                   "format": "double",
                   "x-go-name": "Amount"
                 },
+                "currency": {
+                  "type": "string",
+                  "x-go-name": "Currency"
+                },
                 "description": {
                   "type": "string",
                   "x-go-name": "Description"
@@ -67,6 +54,10 @@
                 "id": {
                   "type": "string",
                   "x-go-name": "ID"
+                },
+                "name": {
+                  "type": "string",
+                  "x-go-name": "Name"
                 }
               }
             }
@@ -210,6 +201,10 @@
             "format": "double",
             "x-go-name": "Amount"
           },
+          "currency": {
+            "type": "string",
+            "x-go-name": "Currency"
+          },
           "date_creation": {
             "type": "integer",
             "format": "int64",
@@ -222,6 +217,10 @@
           "id": {
             "type": "string",
             "x-go-name": "ID"
+          },
+          "name": {
+            "type": "string",
+            "x-go-name": "Name"
           }
         }
       }

@@ -48,7 +48,7 @@ curl -X DELETE http://localhost:8080/expenses?id=<expense_id>
 To generate Swagger documentation for your API, use the following commands:
 
 swag init
-swagger generate spec -o ./swagger.json
+swagger generate spec -o ./docs/swagger.json
 
 ## tests
 - Create mocks with go mock

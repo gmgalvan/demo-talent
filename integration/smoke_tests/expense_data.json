@@ -1,42 +1,62 @@
 [
     {
+        "name": "Groceries",
         "description": "Milk",
-        "amount": 9.04
+        "amount": 9.04,
+        "currency": "USD"
     },
     {
+        "name": "Groceries",
         "description": "Eggs",
-        "amount": 1.7
+        "amount": 1.7,
+        "currency": "USD"
     },
     {
+        "name": "Dining out",
+        "description": "Pizza",
+        "amount": 15.99,
+        "currency": "USD"
+    },
+    {
+        "name": "Entertainment",
+        "description": "Movie tickets",
+        "amount": 20.50,
+        "currency": "USD"
+    },
+    {
+        "name": "Utilities",
+        "description": "Electricity bill",
+        "amount": 50.75,
+        "currency": "USD"
+    },
+    {
+        "name": "Transportation",
+        "description": "Gasoline",
+        "amount": 35.25,
+        "currency": "USD"
+    },
+    {
+        "name": "Shopping",
+        "description": "Shoes",
+        "amount": 65.00,
+        "currency": "USD"
+    },
+    {
+        "name": "Groceries",
         "description": "Bread",
-        "amount": 4.0
+        "amount": 3.5,
+        "currency": "USD"
     },
     {
-        "description": "Apples",
-        "amount": 17.8
+        "name": "Utilities",
+        "description": "Internet bill",
+        "amount": 45.99,
+        "currency": "USD"
     },
     {
-        "description": "Chicken Breast",
-        "amount": 4.92
-    },
-    {
-        "description": "Rice",
-        "amount": 5.93
-    },
-    {
-        "description": "Pasta",
-        "amount": 14.4
-    },
-    {
-        "description": "Cheese",
-        "amount": 9.52
-    },
-    {
-        "description": "Tomatoes",
-        "amount": 4.83
-    },
-    {
-        "description": "Cereal",
-        "amount": 5.3
+        "name": "Entertainment",
+        "description": "Concert tickets",
+        "amount": 80.00,
+        "currency": "USD"
     }
 ]

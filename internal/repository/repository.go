@@ -39,10 +39,10 @@ func NewExpenseRepository(ctx context.Context, db *sql.DB) ExpenseRepositoryInte
 func (r *ExpenseRepository) Create(ctx context.Context, e *entities.Expense) error {
 	r.log.Log(logger.INFO, "/aws/demo-talent", "ExpenseRepository", "Creating expense")
 	query := `
-        INSERT INTO expenses (id, description, amount, date_creation)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO expenses (id, description, amount, date_creation, currency, name)
+        VALUES ($1, $2, $3, $4, $5, $6)
     `
-	_, err := r.db.ExecContext(ctx, query, e.ID, e.Description, e.Amount, e.DateCreation)
+	_, err := r.db.ExecContext(ctx, query, e.ID, e.Description, e.Amount, e.DateCreation, e.Currency, e.Name)
 	if err != nil {
 		r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error creating expense")
 		return fmt.Errorf("error creating expense: %w", err)
@@ -53,14 +53,14 @@ func (r *ExpenseRepository) Create(ctx context.Context, e *entities.Expense) err
 // GetByID retrieves an expense from the database by its ID.
 func (r *ExpenseRepository) GetByID(ctx context.Context, id string) (*entities.Expense, error) {
 	query := `
-        SELECT id, description, amount, date_creation
+        SELECT id, description, amount, date_creation, currency, name
         FROM expenses
         WHERE id = $1
     `
 	row := r.db.QueryRowContext(ctx, query, id)
 
 	var e entities.Expense
-	err := row.Scan(&e.ID, &e.Description, &e.Amount, &e.DateCreation)
+	err := row.Scan(&e.ID, &e.Description, &e.Amount, &e.DateCreation, &e.Currency, &e.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("expense not found with ID: %s", id)
@@ -76,10 +76,10 @@ func (r *ExpenseRepository) GetByID(ctx context.Context, id string) (*entities.E
 func (r *ExpenseRepository) Update(ctx context.Context, e *entities.Expense) error {
 	query := `
         UPDATE expenses
-        SET description = $1, amount = $2
-        WHERE id = $3
+		SET description = $1, amount = $2, date_creation = $3, currency = $4, name = $5
+		WHERE id = $6
     `
-	_, err := r.db.ExecContext(ctx, query, e.Description, e.Amount, e.ID)
+	_, err := r.db.ExecContext(ctx, query, e.Description, e.Amount, e.DateCreation, e.Currency, e.Name, e.ID)
 	if err != nil {
 		r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error updating expense")
 		return fmt.Errorf("error updating expense: %w", err)
@@ -104,7 +104,7 @@ func (r *ExpenseRepository) Delete(ctx context.Context, id string) error {
 // List retrieves expenses from the database with pagination.
 func (r *ExpenseRepository) List(ctx context.Context, limit, offset int) ([]entities.Expense, error) {
     query := `
-        SELECT id, description, amount, date_creation
+        SELECT id, description, amount, date_creation, currency, name
         FROM expenses
         ORDER BY date_creation DESC
         LIMIT $1 OFFSET $2
@@ -119,7 +119,7 @@ func (r *ExpenseRepository) List(ctx context.Context, limit, offset int) ([]enti
     var expenses []entities.Expense
     for rows.Next() {
         var e entities.Expense
-        err := rows.Scan(&e.ID, &e.Description, &e.Amount, &e.DateCreation)
+        err := rows.Scan(&e.ID, &e.Description, &e.Amount, &e.DateCreation, &e.Currency, &e.Name)
         if err != nil {
             r.log.Log(logger.ERROR, "/aws/demo-talent", "ExpenseRepository", "Error scanning expenses")
             return nil, fmt.Errorf("error scanning expenses: %w", err)

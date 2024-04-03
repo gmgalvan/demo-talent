@@ -24,7 +24,7 @@ services:
       - POSTGRES_PASSWORD=mysecretpassword
       - POSTGRES_DB=mydatabase
     volumes:
-      - postgres_app_data:/var/lib/postgresql/data
+      - postgres_app_demo_data:/var/lib/postgresql/data
 
 volumes:
-  postgres_app_data:
+  postgres_app_demo_data:

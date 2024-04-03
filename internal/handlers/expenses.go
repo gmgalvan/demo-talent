@@ -240,6 +240,10 @@ type updateExpenseRequest struct {
 		Description string `json:"description"`
 		// Required: true
 		Amount float64 `json:"amount"`
+		// Required: false
+		Currency string `json:"currency"`
+		// Required: false
+		Name string `json:"name"`
 	}
 }
 
@@ -251,6 +255,8 @@ type expenseResponse struct {
 		Description  string  `json:"description"`
 		Amount       float64 `json:"amount"`
 		DateCreation int64   `json:"date_creation"`
+		Currency     string  `json:"currency"`
+		Name         string  `json:"name"`
 	}
 }
 
