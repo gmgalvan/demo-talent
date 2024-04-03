@@ -19,7 +19,7 @@ jobs:
       
       - name: Run tests
         run: |
-          cd services
+          cd internal/services
           go test ./...
       
       - name: Setup AWS CLI
