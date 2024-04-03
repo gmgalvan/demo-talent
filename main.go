@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -21,7 +20,11 @@ import (
 
 func main() {
 	isDebug := os.Getenv("DEBUG") == "true"
-    logger := logger.NewLogger(isDebug)
+    logLevel := logger.INFO
+    if isDebug {
+        logLevel = logger.DEBUG
+    }
+    log := logger.NewLogger(isDebug, logLevel) // Default info
 
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
@@ -30,20 +33,19 @@ func main() {
 	dbName := os.Getenv("DB_NAME")
 	sslmode := os.Getenv("SSL_MODE")
 
-	logger.Log("/aws/demo-talent", "main", "Starting the server")
-
+	log.Log(logger.INFO, "/aws/demo-talent", "main", "Starting the server")
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		dbHost, dbPort, dbUser, dbPassword, dbName, sslmode)
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		log.Fatal("Error connecting to the database:", err)
+		log.Log(logger.FATAL, "/aws/demo-talent", "main", "Error connecting to the database")
 	}
 	defer db.Close()
 
 	// Run database migrations
 	if err := runMigrations(db); err != nil {
-		log.Fatal("Error running migrations:", err)
+		log.Log(logger.FATAL, "/aws/demo-talent", "main", "Error running migrations")
 	}
 
 	repo := repository.NewExpenseRepository(db)
@@ -65,9 +67,9 @@ func main() {
 		http.ServeFile(w, r, "./docs/swagger.json")
 	})
 
-	log.Println("Server started on port 8080")
+	log.Log(logger.INFO, "/aws/demo-talent", "main", "Server started on port 8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {
-		log.Fatal("Error starting the server:", err)
+		log.Log(logger.FATAL, "/aws/demo-talent", "main", "Error starting the server")
 	}
 }
 
