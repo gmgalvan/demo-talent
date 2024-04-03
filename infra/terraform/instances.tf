@@ -50,7 +50,8 @@ resource "aws_iam_policy" "cloudwatch_logs_policy" {
         Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:logs:*:*:*"

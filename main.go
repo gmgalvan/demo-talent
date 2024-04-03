@@ -20,13 +20,17 @@ import (
 )
 
 func main() {
-	logger.LogToCloudWatch("demo-talent", "main", "Starting the server")
+	isDebug := os.Getenv("DEBUG") == "true"
+    logger := logger.NewLogger(isDebug)
+
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 	sslmode := os.Getenv("SSL_MODE")
+
+	logger.Log("demo-talent", "main", "Starting the server")
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		dbHost, dbPort, dbUser, dbPassword, dbName, sslmode)
